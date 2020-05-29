@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +25,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.tb_toolbar));
+        RecyclerView pizzaRecycler = (RecyclerView) findViewById(R.id.rv_pizza);
+
+        String[] pizzaNames = new String[Pizza.pizzas.length];
+        for (int i = 0; i < pizzaNames.length; i++) {
+            pizzaNames[i] = Pizza.pizzas[i].getName();
+        }
+
+        int[] pizzaImages = new int[Pizza.pizzas.length];
+        for (int i = 0; i < pizzaNames.length; i++) {
+            pizzaImages[i] = Pizza.pizzas[i].getImageResourceId();
+        }
+
+        CaptionedImagesAdapter adapter = new CaptionedImagesAdapter(pizzaNames, pizzaImages);
+        pizzaRecycler.setAdapter(adapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        pizzaRecycler.setLayoutManager(layoutManager);
+
+        adapter.setListener(new CaptionedImagesAdapter.Listener() {
+            @Override
+            public void onClick(int position) {
+                //Почему здесь проканал BaseContext?
+                Intent intent = new Intent(getBaseContext(), PizzaDetailActivity.class);
+                intent.putExtra(PizzaDetailActivity.EXTRA_PIZZA_ID, position);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

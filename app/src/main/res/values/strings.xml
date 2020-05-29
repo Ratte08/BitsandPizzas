@@ -3,4 +3,6 @@
     <string name="tv_another">Another text</string>
     <string name="create_order">Create Order</string>
     <string name="action_share">Share</string>
+    <string name="iv_decription">Pizza pic</string>
+    <string name="details_label">Pizza Details</string>
 </resources>
