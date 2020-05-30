@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CaptionedImagesAdapter.Listener {
 
     private ShareActionProvider shareActionProvider;
 
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.tb_toolbar));
-        RecyclerView pizzaRecycler = (RecyclerView) findViewById(R.id.rv_pizza);
+        RecyclerView pizzaRecycler = findViewById(R.id.rv_pizza);
 
         String[] pizzaNames = new String[Pizza.pizzas.length];
         for (int i = 0; i < pizzaNames.length; i++) {
@@ -42,15 +42,7 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         pizzaRecycler.setLayoutManager(layoutManager);
 
-        adapter.setListener(new CaptionedImagesAdapter.Listener() {
-            @Override
-            public void onClick(int position) {
-                //Почему здесь проканал BaseContext?
-                Intent intent = new Intent(getBaseContext(), PizzaDetailActivity.class);
-                intent.putExtra(PizzaDetailActivity.EXTRA_PIZZA_ID, position);
-                startActivity(intent);
-            }
-        });
+        adapter.setPizzaListener(this);
     }
 
     @Override
@@ -73,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onClickPizza(int position) {
+        //Почему здесь проканал BaseContext?
+        Intent intent = new Intent(MainActivity.this, PizzaDetailActivity.class);
+        intent.putExtra(PizzaDetailActivity.EXTRA_PIZZA_ID, position);
+        startActivity(intent);
     }
 
     private void setShareActionIntent (String text) {
